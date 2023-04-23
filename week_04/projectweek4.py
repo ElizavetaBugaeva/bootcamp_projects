@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 # other libraries
 import time
 import nltk  
-nltk.download("wordnet")  # only done once! we have to download the WordNet database locally
+nltk.download("wordnet")
 
 # very good tokenizer for english, considers sentence structure
 from nltk.tokenize import TreebankWordTokenizer 
@@ -64,6 +64,7 @@ nirvana_func_lines = get_all_lines(NIRVANA_PATH,all_lines_nirvana)
 
 CORPUS = gorillaz_func_lines + nirvana_func_lines
 
+
 vectorizer = TfidfVectorizer(stop_words='english')
 vec = vectorizer.fit_transform(CORPUS)
 
@@ -80,8 +81,8 @@ X_train_f, X_test_f, y_train_f, y_test_f = train_test_split(X, y, test_size=0.33
 
 #Log regression
 lr_pipeline = Pipeline([
-    ('PCA', PCA(n_components=PCA_N_COMPONENTS, svd_solver=PCA_SVD_SOLVER)),
-    ('over', SMOTE(sampling_strategy=SMOTE_SAMPLING_STRATEGY)),
+    ('PCA', PCA(n_components=0.99, svd_solver='full')),
+    ('over', SMOTE(sampling_strategy={'nirvana':3500})),
     ('logregmodel', LogisticRegression(class_weight=None))
 ])
 lr_pipeline.fit(X_train_f,y_train_f)
@@ -89,3 +90,4 @@ lr_pipeline.fit(X_train_f,y_train_f)
 #Multionomial NB
 NBmodel=MultinomialNB()
 NBmodel.fit(X_train_f, y_train_f)
+
