@@ -12,8 +12,6 @@ from bs4 import BeautifulSoup
 import time
 import nltk  
 nltk.download("wordnet")
-
-# very good tokenizer for english, considers sentence structure
 from nltk.tokenize import TreebankWordTokenizer 
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
@@ -40,6 +38,7 @@ from sklearn.model_selection import train_test_split
 GORILLAZ_PATH = "/Users/elizavetabugaeva/Documents/Spiced/weekly_milestones/week_04/gorillaz"
 NIRVANA_PATH = "/Users/elizavetabugaeva/Documents/Spiced/weekly_milestones/week_04/nirvana"
 
+
 # FUNCTIONS
 def get_all_lines(dir_path, all_lines):
     all_lines = []
@@ -63,14 +62,14 @@ all_lines_nirvana = []
 nirvana_func_lines = get_all_lines(NIRVANA_PATH,all_lines_nirvana)
 
 CORPUS = gorillaz_func_lines + nirvana_func_lines
-
+LABELS = ['gorillaz'] * len(gorillaz_func_lines) + ['nirvana']* len(nirvana_func_lines)
 
 vectorizer = TfidfVectorizer(stop_words='english')
 vec = vectorizer.fit_transform(CORPUS)
 
 feature_matrix = pd.DataFrame(
     vec.todense(), 
-    columns=vectorizer.get_feature_names(), 
+    columns=vectorizer.get_feature_names_out(), 
     index=LABELS
 )
 
@@ -83,11 +82,25 @@ X_train_f, X_test_f, y_train_f, y_test_f = train_test_split(X, y, test_size=0.33
 lr_pipeline = Pipeline([
     ('PCA', PCA(n_components=0.99, svd_solver='full')),
     ('over', SMOTE(sampling_strategy={'nirvana':3500})),
-    ('logregmodel', LogisticRegression(class_weight=None))
+    ('logregmodel', LogisticRegression(class_weight='balanced'))
 ])
 lr_pipeline.fit(X_train_f,y_train_f)
 
 #Multionomial NB
 NBmodel=MultinomialNB()
 NBmodel.fit(X_train_f, y_train_f)
+
+
+#Voting classifier
+models = [('logreg', LogisticRegression()),('NBmodel', MultinomialNB())]
+voting_pipeline = Pipeline([
+    ('voting', VotingClassifier(models))
+])
+voting_pipeline.fit(X_train_f,y_train_f)
+print(f'train {voting_pipeline.score(X_train_f,y_train_f)}, test {voting_pipeline.score(X_test_f,y_test_f)}')
+
+
+
+
+
 
