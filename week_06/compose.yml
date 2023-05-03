@@ -1,0 +1,11 @@
+services:
+    reddit_collector:
+        build: Project_06/
+        volumes:
+        - ./Project_06/:/app
+        depends_on:
+        - mongodb
+    mongodb:
+        image: mongo
+        ports:
+        - 27017:27017
