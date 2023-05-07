@@ -36,6 +36,7 @@ headers = {
     'User-Agent': 'TestAppforDocker'
 }
 
+
 ### POST REQUEST FOR ACCESS TOKEN
 
 POST_URL = "https://www.reddit.com/api/v1/access_token"
@@ -90,11 +91,25 @@ for post in full_response:
     subreddit = post['data']['subreddit']  # the above defined 'topic'
     title = post['data']['title']
     text = post['data']['selftext']  # the actual content
+
+    # Check if the document already exists in the collection
+    existing_doc = db.posts.find_one({'_id': _id})
+    if existing_doc:
+        # Update the existing document
+        db.posts.update_one({'_id': _id}, {'$set': {'sub_id': subreddit_id, 'date': time, 'text': text}})
+    else:
+        # Insert a new document
+        mongo_input = {'_id': _id, 'sub_id': subreddit_id, 'date': time, 'text': text}
+        db.posts.insert_one(mongo_input)
     
     # shorten or lengthen mongo input as you deem fit: 
-    mongo_input = {'_id': _id, 'sub_id': subreddit_id, 'date': time, 'text': text}
-    db.posts.insert_one(mongo_input)
+    #mongo_input = {'_id': _id, 'sub_id': subreddit_id, 'date': time, 'text': text}
+    # Create an update operation to set the new values
+    #update = {'$set': {'sub_id': subreddit_id, 'date': time, 'text': text}}
+    
+    # Use update_one() to update the document with the given _id
+    #db.posts.update_one(filter, update, upsert=True)
+    #db.posts.insert_one(mongo_input)
  
-    # This is what we could send to the mongodb (Thursday).
-    #print(mongo_input, end='\n\n') #change to save it in the mongo database
+
 
