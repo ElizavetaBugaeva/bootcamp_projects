@@ -4,7 +4,6 @@ and serves as the first step of the dockerized pipeline.
 
 TO DO -add Mongodb connection with pymongo and insert reddits into Mongodb -> Thursday
 """
-
 import requests
 from requests.auth import HTTPBasicAuth
 import sys
@@ -100,16 +99,8 @@ for post in full_response:
     else:
         # Insert a new document
         mongo_input = {'_id': _id, 'sub_id': subreddit_id, 'date': time, 'text': text}
+        #print(mongo_input)
         db.posts.insert_one(mongo_input)
-    
-    # shorten or lengthen mongo input as you deem fit: 
-    #mongo_input = {'_id': _id, 'sub_id': subreddit_id, 'date': time, 'text': text}
-    # Create an update operation to set the new values
-    #update = {'$set': {'sub_id': subreddit_id, 'date': time, 'text': text}}
-    
-    # Use update_one() to update the document with the given _id
-    #db.posts.update_one(filter, update, upsert=True)
-    #db.posts.insert_one(mongo_input)
  
 
 
