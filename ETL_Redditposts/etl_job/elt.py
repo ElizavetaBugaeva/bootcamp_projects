@@ -67,16 +67,16 @@ def transform(extracted_reddits):
         #here we select the 'text' key from the dictoinary
         text = post['text']
 
-        #... clean it using the regex cleaning function (which currently does nothing)
+        #clean it using the regex cleaning function (which currently does nothing)
         text = regex_clean(text)
 
-        #...perform sentiment analysis (currently returns 1 for all text - yours will be different)
+        #perform sentiment analysis (currently returns 1 for all text - yours will be different)
         sentiment = 1
 
-        #... add a field to the post dictionary called "sentiment" that contains this value
+        #add a field to the post dictionary called "sentiment" that contains this value
         post['sentiment'] = sentiment
 
-        # ... and finally append the post to our list of transformed reddits
+        #append the post to our list of transformed reddits
         transformed_reddits.append(post)
 
         # can also optionally add a logging statement
