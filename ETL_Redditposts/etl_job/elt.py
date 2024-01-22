@@ -3,6 +3,7 @@ import sqlalchemy  # use a version prior to 2.0.0 or adjust creating the engine 
 import psycopg2
 import time
 import logging
+from config import tokens 
 #import pandas as pd
 
 
@@ -15,8 +16,8 @@ coll = db.posts #change this to whatever your collection in that db is called
 HOST_PG = 'postgresdb'  # my_postgres is the hostname (= service in yml file)
 PORT_PG = 5432
 DATABASE_NAME_PG = 'reddits_pgdb'
-USERNAME_PG = 'postgres'
-PASSWORD_PG = 'mahecz2207'
+USERNAME_PG = tokens['username']
+PASSWORD_PG = tokens['password']
 
 
 conn_string_pg = f"postgresql://{USERNAME_PG}:{PASSWORD_PG}@{HOST_PG}:{PORT_PG}/{DATABASE_NAME_PG}"
